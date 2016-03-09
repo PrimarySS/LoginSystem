@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import me.syf.util.TokenProccessor;
+
 /**
  * Servlet implementation class register
  */
@@ -27,6 +29,8 @@ public class register extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String token = TokenProccessor.getInstance().makeToken();//创建令牌
+		request.getSession().setAttribute("token", token);
 		request.getRequestDispatcher("/WEB-INF/pages/register.jsp").forward(request, response);
 	}
 

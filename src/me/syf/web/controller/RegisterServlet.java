@@ -42,6 +42,17 @@ public class RegisterServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		if(isRepeatSubmit(request) == true)
+		{
+		
+			String message = String.format("请不要重复提交！！2秒后返回登陆页面<meta http-equiv='refresh' content='2;url=%s'/>",
+					request.getContextPath() + "/login");
+			
+			request.setAttribute("message", message);
+			request.getRequestDispatcher("/message.jsp").forward(request, response);
+			return;
+		}
+		request.getSession().removeAttribute("token");
 		RegisterFormBean formbean = WebUtils.request2Bean(request, RegisterFormBean.class);
 		if (formbean.validate() == false) {
 			request.setAttribute("formbean", formbean);
@@ -56,7 +67,7 @@ public class RegisterServlet extends HttpServlet {
 			user.setId(WebUtils.makeId());// 设置用户的Id属性
 			IUserService service = new UserServiceImpl();
 			service.registerUser(user);
-			String message = String.format("注册成功！！3秒后为您自动跳到登录页面！！<meta http-equiv='refresh' content='3;url=%s'/>",
+			String message = String.format("注册成功！！2秒后为您自动跳到登录页面！！<meta http-equiv='refresh' content='2;url=%s'/>",
 					request.getContextPath() + "/login");
 			
 			request.setAttribute("message", message);
@@ -73,7 +84,20 @@ public class RegisterServlet extends HttpServlet {
 			
 		}
 	}
-
+	private boolean isRepeatSubmit(HttpServletRequest request){
+		String clientToken = request.getParameter("token");
+		String SessionToken = (String) request.getSession().getAttribute("token");
+		if(clientToken == null || SessionToken == null)
+		{
+			return true;
+		}
+		if(!clientToken.equals(SessionToken))
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -83,5 +107,7 @@ public class RegisterServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
+	
+	
 
 }

@@ -8,6 +8,7 @@
 </head>
 <body style="text-align: center;">
         <form action="${pageContext.request.contextPath}/RegisterServlet" method="post">
+        	<input type="hidden" name="token" value="${token}">
             <table width="60%" border="1">
                 <tr>
                     <td>用户名</td>
